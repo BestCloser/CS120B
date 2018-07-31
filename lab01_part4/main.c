@@ -33,8 +33,14 @@ int main(void)
 		else {
 			tmpD = 0x00;
 		}
-		signed short tmpAC = tmpA - tmpC;
-		if ( abs(tmpAC) > 80 ) {
+		unsigned short tmpAC = 0x00;
+		if (tmpC > tmpA ) {
+			tmpAC = tmpC - tmpA;	
+		}
+		else {
+			tmpAC = tmpA - tmpC;
+		}
+		if ( tmpAC > 80 ) {
 			tmpD = tmpD | 0x02 ; //PD1 = 1
 		}
 		
