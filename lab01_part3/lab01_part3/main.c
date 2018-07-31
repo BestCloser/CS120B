@@ -34,7 +34,7 @@ int main(void)
 			cntavail = 0x01;
 		}
 		else {
-			cntavail = 0x40;
+			cntavail = 0x80;
 		}
 		// (3) Write output
 		
