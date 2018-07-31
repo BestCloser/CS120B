@@ -6,7 +6,7 @@
  */ 
 
 #include <avr/io.h>
-
+#include <stdlib.h>
 
 int main(void)
 {
@@ -33,14 +33,7 @@ int main(void)
 		else {
 			tmpD = 0x00;
 		}
-		unsigned short tmpAC = 0x00;
-		if (tmpC > tmpA ) {
-			tmpAC = tmpC - tmpA;	
-		}
-		else {
-			tmpAC = tmpA - tmpC;
-		}
-		if ( tmpAC > 80 ) {
+		if ( abs(tmpA - tmpC) > 80 ) {
 			tmpD = tmpD | 0x02 ; //PD1 = 1
 		}
 		
