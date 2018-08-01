@@ -1,8 +1,7 @@
 /*
  * lab01_part3.c
- *
- * Created: 7/30/2018 4:31:10 PM
- * Author : ucrcse
+ * Name: Daniel Li   SID: 861269426
+ * Partner: Siwon Kim
  */ 
 
 #include <avr/io.h>
@@ -34,7 +33,7 @@ int main(void)
 			cntavail = 0x01;
 		}
 		else {
-			cntavail = 0x80;
+			cntavail = 0x80; //modified this from part 2
 		}
 		// (3) Write output
 		

@@ -1,8 +1,7 @@
 /*
  * lab01_part1.c
- *
- * Created: 7/30/2018 2:49:05 PM
- * Author : ucrcse
+ * Name: Daniel Li   SID: 861269426
+ * Partner: Siwon Kim
  */ 
 
 #include <avr/io.h>
