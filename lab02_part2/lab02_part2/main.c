@@ -20,13 +20,13 @@ unsigned char GetBit(unsigned char x, unsigned char k) {
 int main(void)
 {
     DDRA = 0x00; PORTA = 0xFF; //PA3 ... PA0 value between 0 and 15 (full)
-	DDRB = 0xFF; PORTC = 0x00; //PC5 ... PC0 LED for fuel level, lv1 or 2 = PC5; lv3 or 4, PC5 and PC4; lv5 or 6, PC5,4,3 ; etc ; PC6 is LOW FUEL, lights up if level is 4 or less
+	DDRC = 0xFF; PORTC = 0x00; //PC5 ... PC0 LED for fuel level, lv1 or 2 = PC5; lv3 or 4, PC5 and PC4; lv5 or 6, PC5,4,3 ; etc ; PC6 is LOW FUEL, lights up if level is 4 or less
     unsigned char tmpA = 0x00;
 	unsigned char tmpC = 0x00;
 
 	while(1)
 	{
-		tmpA = PINA & 0x0F; //bitmask, only want PA3,2,1,0
+		tmpA = ~PINA & 0x0F; //bitmask, only want PA3,2,1,0
 		tmpC = 0x00;
 		if (tmpA == 0) { //PC6 on, nothing else
 			tmpC = SetBit(tmpC, 6, 1);
@@ -35,26 +35,26 @@ int main(void)
 			tmpC = SetBit(tmpC, 6, 1);
 			tmpC = SetBit(tmpC, 5, 1);
 		}
-		else if ( (tmpA == 3) || (tmpA == 4) ) {
+ 		else if ( (tmpA == 3) || (tmpA == 4) ) {
 			tmpC = SetBit(tmpC, 6, 1);
 			tmpC = SetBit(tmpC, 5, 1);
 			tmpC = SetBit(tmpC, 4, 1);
 		}
 		else if ( (tmpA == 5) || (tmpA == 6) ) {
-			tmpC = SetBit(tmpC, 6, 0);
+//			tmpC = SetBit(tmpC, 6, 0);
 			tmpC = SetBit(tmpC, 5, 1);
 			tmpC = SetBit(tmpC, 4, 1);
 			tmpC = SetBit(tmpC, 3, 1);
 		}
 		else if ( (tmpA == 7) || (tmpA == 8) ||(tmpA == 9) ) {
-			tmpC = SetBit(tmpC, 6, 0);
+//			tmpC = SetBit(tmpC, 6, 0);
 			tmpC = SetBit(tmpC, 5, 1);
 			tmpC = SetBit(tmpC, 4, 1);
 			tmpC = SetBit(tmpC, 3, 1);
 			tmpC = SetBit(tmpC, 2, 1);
 		}
 		else if ( (tmpA == 10) || (tmpA == 11) || (tmpA == 12) ) {
-			tmpC = SetBit(tmpC, 6, 0);
+//			tmpC = SetBit(tmpC, 6, 0);
 			tmpC = SetBit(tmpC, 5, 1);
 			tmpC = SetBit(tmpC, 4, 1);
 			tmpC = SetBit(tmpC, 3, 1);
@@ -62,7 +62,7 @@ int main(void)
 			tmpC = SetBit(tmpC, 1, 1);
 		}
 		else if ( (tmpA == 13) || (tmpA == 14) || (tmpA == 15) ) {
-			tmpC = SetBit(tmpC, 6, 0);
+//			tmpC = SetBit(tmpC, 6, 0);
 			tmpC = SetBit(tmpC, 5, 1);
 			tmpC = SetBit(tmpC, 4, 1);
 			tmpC = SetBit(tmpC, 3, 1);
