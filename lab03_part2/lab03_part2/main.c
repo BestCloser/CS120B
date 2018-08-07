@@ -12,8 +12,8 @@ enum PORTC_states { INIT, MAIN_WAIT, ADD, ADD_WAIT, SUBTRACT, SUB_WAIT, RESET, R
 
 void PORTC_Tick()
 {
-	unsigned char A0 = PINA & 0x01; //bitmasks, want PA0 and PA1	
-	unsigned char A1 = PINA & 0x02;
+	unsigned char A0 = ~PINA & 0x01; //bitmasks, want PA0 and PA1	
+	unsigned char A1 = ~PINA & 0x02;
 	unsigned char tmpC = PORTC & 0x0F; //max 9, min 0
 	switch(PORTC_State) {   // Transitions
 		case INIT:  // Initial transition
