@@ -1,9 +1,6 @@
 /*
- * lab03_part2.c
- *
- * Created: 8/1/2018 2:43:26 PM
- * Author : Daniel
- */
+ * lab04_part2.c
+*/
 
 #include <avr/io.h>
 //#include "RIMS.h"

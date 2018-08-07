@@ -1,9 +1,6 @@
 /*
- * lab02_part2.c
- *
- * Created: 7/31/2018 3:17:30 PM
- * Author : Daniel
- */ 
+ * lab04_part1.c
+ */
 
 #include <avr/io.h>
 
