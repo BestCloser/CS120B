@@ -1,8 +1,7 @@
 /*
  * lab05_part1.c
- *
- * Created: 8/7/2018 1:22:22 PM
- * Author : Daniel
+ * Name: Daniel Li
+ * Partner: Siwon Kim
  */ 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -70,22 +69,22 @@ void PORTB_Tick() {
 	
 	switch(PORTB_State) {
 		case INIT:
-		PORTC = 0x00;
+		PORTB = 0x00;
 		PORTB_State = ONE;
 		break;
 		
 		case ONE:
-		PORTC = 0x01;
+		PORTB = 0x01;
 		PORTB_State = TWO;
 		break;
 		
 		case TWO:
-		PORTC = 0x02;
+		PORTB = 0x02;
 		PORTB_State = THREE;
 		break;
 		
 		case THREE:
-		PORTC = 0x04;
+		PORTB = 0x04;
 		PORTB_State = ONE;
 		break;
 	}
@@ -96,7 +95,7 @@ void PORTB_Tick() {
 int main(void)
 {
 	DDRC = 0xFF; // Set port B to output
-	PORTC = 0x00; // Init port B to 0s
+	PORTB = 0x00; // Init port B to 0s
 	TimerSet(125);
 	TimerOn();
 //	unsigned char tmpB = 0x00;
