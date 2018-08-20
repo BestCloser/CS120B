@@ -98,13 +98,13 @@ int main(void)
 	while(1)
 	{
 		if (A0) {
-			set_PWM(261.63*(1000/125));
+			set_PWM(261.63);
 		}
 		else if (A1) {
-			set_PWM(293.66*(1000/125));
+			set_PWM(293.66);
 		}
 		else if (A2) {
-			set_PWM(329.63*(1000/125));
+			set_PWM(329.63);
 			
 		}
 		else {
