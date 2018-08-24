@@ -4,7 +4,6 @@
  */ 
 
 #include <avr/io.h>
-//#include "RIMS.h"
 #include "timer.c"
 
 enum ThreeLED_States { ONE, TWO, THREE } ThreeLED_State;
@@ -74,19 +73,19 @@ int main(void) {
 	unsigned long ThreeLED_elapsedTime = 0;
 	unsigned long BlinkingLED_elapsedTime = 0;
 //	unsigned long Speaker_elapsedTime = 0;
-	const unsigned long timerPeriod = 1;
+	const unsigned long timerPeriod = 2;
 	//B = 0;
-	TimerSet(1);
+	TimerSet(2);
 	TimerOn();
 	ThreeLED_State = ONE;
 	BlinkingLED_State = Blink_OFF;
 	Speaker_State = Speaker;
 	while (1) {
-		if (ThreeLED_elapsedTime >= 38) { //125 is 1000ms, 300ms is 125*.3 = 37.5 => 38 
+		if (ThreeLED_elapsedTime >= 300) {
 			ThreeLED_Tick();
 			ThreeLED_elapsedTime = 0;
 		}
-		if (BlinkingLED_elapsedTime >= 125) {
+		if (BlinkingLED_elapsedTime >= 1000) {
 			BlinkingLED_Tick();
 			BlinkingLED_elapsedTime = 0;
 		}
