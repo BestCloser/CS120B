@@ -13,14 +13,6 @@ IDK HOW TO USE MULTIPLE C FILES, SO GOING TO JUST COPY-PASTE OVER INTO THIS FILE
 CURRENT CODE: TEST.C
 */
 
-//sample LED code from LED matrix pre-lab
-/* 
-   the synchSM should display a demo on the LED matrix
-   where a single illuminated LED scrolls from left to 
-   right, top to bottom, then resets. The synchSM period 
-   should be at least 50-100 ms in order for the demo
-   to be visible. 
-*/
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -49,7 +41,7 @@ unsigned char x_val = 0;
 unsigned char y_val = 0;
 unsigned char x_catcher = 0;
 unsigned char bounds = 0;
-unsigned char startGame = 0;
+//unsigned char startGame = 0;
 unsigned char gameOver = 0;
 unsigned char beat_catch = 0;
 unsigned char beat_miss = 0;
@@ -92,18 +84,34 @@ void CLEAR_ALL()
 	PORTB = ~(0b00000000);
 }
 
+int startGame()
+{
+	unsigned char tmp = PIND;
+	tmp = tmp & 0x03;
+	if (tmp == 0x02 || tmp == 0x01)
+	{
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
 
-enum Player_states { Player_start, Release, main_state, initialization, right, left} Player_state;
+
+
+
+
+enum Player_states { Player_start, initialization, main_state , right, left, Release } Player_state;
 int Player_Tick(int Player_state)
 {
 	unsigned char left_press = PIND & 0x02;
 	unsigned char right_press = PIND & 0x01;
-	startGame = PIND & 0x04;
+	
 	switch (Player_state) //State transitions
 	{
 		
 		case Player_start:
-		if(startGame == 0x04 && gameOver == 0)
+		if(startGame() == 1 && gameOver == 0)
 		{
 			Player_state = initialization;
 		}
@@ -197,12 +205,11 @@ int Player_Tick(int Player_state)
 enum Beats_states {Beats_start, Beats_initialization, Beats_drop} Beats_state;
 int Beats_Tick(int Beats_state)
 {
-	startGame = PIND & 0x04;
 	
 	switch (Beats_state) //State transitions
 	{
 		case Beats_start:
-		if(startGame == 0x04 && gameOver == 0)
+		if(startGame() == 1 && gameOver == 0)
 		{
 			Beats_state = Beats_initialization;
 		}
@@ -342,12 +349,11 @@ switch (state) {
 enum Matrix_Output_states {Start_Matrix_Output, Matrix_Output_catcher,  Matrix_Output_beats} Matrix_Output_state;
 int Matrix_Output(int Matrix_Output_state)
 {
-	startGame = PIND & 0x04;
 	switch (Matrix_Output_state) //State transitions
 	{
 		
 		case Start_Matrix_Output:
-		if (startGame == 0x04 && gameOver == 0)
+		if (startGame() == 1 && gameOver == 0)
 		{
 			Matrix_Output_state = Matrix_Output_catcher;
 		}
@@ -360,11 +366,11 @@ int Matrix_Output(int Matrix_Output_state)
 		
 		case Matrix_Output_catcher:
 		Matrix_Output_state = Matrix_Output_beats;
-		if(gameOver == 1)
-		{
-			CLEAR_ALL();
-			Matrix_Output_state = Start_Matrix_Output;
-		}
+//		if(gameOver == 1)
+//		{
+//			CLEAR_ALL();
+//			Matrix_Output_state = Start_Matrix_Output;
+//		}
 		break;
 		
 		case Matrix_Output_beats:
@@ -382,7 +388,7 @@ int Matrix_Output(int Matrix_Output_state)
 		PORTA = 0b00000001;
 		PORTB = x_catcher;
 //		transmit_data(something); //idk how to do this yet
-		
+/*		
 		if(y_val == 0b00000001 && ( (x_catcher & ~0x01) == (x_val & ~0x01) ||
 		(x_catcher & ~0x02) == (x_val & ~0x02) ||
 		(x_catcher & ~0x04) == (x_val & ~0x04) ||
@@ -398,7 +404,7 @@ int Matrix_Output(int Matrix_Output_state)
 		{
 			beat_miss = 1;
 		}	
-		break;
+*/		break;
 		
 		case Matrix_Output_beats:
 		PORTA = y_val;
