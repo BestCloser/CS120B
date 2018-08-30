@@ -15,10 +15,11 @@ IDK HOW TO USE MULTIPLE C FILES, SO GOING TO JUST COPY-PASTE OVER INTO THIS FILE
 CURRENT CODE: TEST.C
 */
 
-//#define F_CPU 1000000UL
+#define F_CPU 8000000UL
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include <avr/eeprom.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -177,7 +178,7 @@ void updateLCD()
 		LCD_WriteData('E');
 		LCD_Cursor(6);
 		LCD_WriteData(':');
-		//Current Score
+		//Current score
 		LCD_Cursor(7);
 		LCD_WriteData( tmpScore / 100  + '0'); //hundreds place
 		tmpScore = tmpScore - (tmpScore / 100) * 100;
@@ -283,7 +284,7 @@ void LCD_PlayStart() {
 	LCD_WriteData('Y');
 	
 	//temp fix for refreshing, if I only did writedata for "PRESS TO PLAY", to play gets cut out, I am unsure of fix at the current moment
-	LCD_Cursor(14);
+/*	LCD_Cursor(14);
 	LCD_WriteData(' ');
 	LCD_Cursor(15);
 	LCD_WriteData(' ');
@@ -305,6 +306,14 @@ void LCD_PlayStart() {
 	LCD_WriteData(' ');
 	LCD_Cursor(24);
 	LCD_WriteData(' ');
+*/
+	unsigned char Character[8] = { 0x01, 0x03, 0x07, 0x1F, 0x1F, 0x07, 0x03, 0x01 };
+
+	LCD_Custom_Char(0, Character);
+	LCD_Cursor(15);
+	LCD_WriteData(0);
+
+
 	LCD_Cursor(25);
 	LCD_WriteData(' ');
 	LCD_Cursor(26);
@@ -832,7 +841,12 @@ int main(void)
 
 	LCD_init();
 	LCD_ClearScreen();
-	
+
+//	LCD_Command(0xC0);
+//	LCD_WriteData(0);
+
+//	LCD_Custom_Char(0, Character);
+
 	TimerSet(GCD);
 	TimerOn();
 
