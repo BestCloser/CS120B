@@ -757,11 +757,11 @@ int main(void)
 	DDRD = 0xC0; PORTD = 0x3F; //inputs
 		
 	// Period for the tasks
-	unsigned long int Beats_calc = 200;
-	unsigned long int Player_calc = 50;
-	unsigned long int Matrix_calc = 1;
-	unsigned long int Catch_calc = 200;
-	unsigned long int Miss_calc = 200;
+	unsigned long int Beats_calc = 150;				//YOU CAN EDIT BEATS_CALC, CATCH_CALC, MISS_CALC TO CHANGE SPEED OF GAME
+	unsigned long int Player_calc = 50;				//200 BASE, 150 SPEED UP
+	unsigned long int Matrix_calc = 1;				//LOWER TO FASTER, HIGHER THE SLOWER
+	unsigned long int Catch_calc = 150;
+	unsigned long int Miss_calc = 150;
 //	unsigned long int LCD_calc = 200;
 	
 	
@@ -829,17 +829,9 @@ int main(void)
 
 	// Set the timer and turn it on
 
-//	LCD_init();
-//	LCD_ClearScreen();
-//	LCD_Cursor(1);
-//	LCD_WriteData(0 + '0');
-//	LCD_DisplayString(1, "Hello World");
-
-
 
 	LCD_init();
 	LCD_ClearScreen();
-//	LCD_DisplayString(1, "Press any button to start");
 	
 	TimerSet(GCD);
 	TimerOn();
