@@ -1,13 +1,14 @@
+//WORKING FINAL PRODUCT IN CASE MAIN.C BREAKS
+//
+//
+////////////////////////////////////////////////////////////////
+
 /*
  * final_project.c
  *
  * Created: 8/26/2018 4:41:38 PM
  * Author : Daniel
  */ 
-
-//=======================================
-// Catch Game v1.1 
-//=======================================
 
 /*
 WILL EDIT THIS FILE WHENEVER I NEED TO TEST SOMETHING ON BREADBOARD BECAUSE
@@ -249,9 +250,8 @@ void updateLCD()
 void LCD_PlayStart() {
 	score = 0;
 	LCD_ClearScreen();
-//	LCD_DisplayString(1, "Press to Play");
-
-	LCD_Cursor(1);
+	LCD_DisplayString(1, "Press to Play");
+/*	LCD_Cursor(1);
 	LCD_WriteData('P');
 	LCD_Cursor(2);
 	LCD_WriteData('R');
@@ -262,67 +262,40 @@ void LCD_PlayStart() {
 	LCD_Cursor(5);
 	LCD_WriteData('S');
 	
-	LCD_Cursor(6);
-	LCD_WriteData(' ');
-	
 	LCD_Cursor(7);
-	LCD_WriteData('T');
+	LCD_WriteData('A');
 	LCD_Cursor(8);
+	LCD_WriteData('N');
+	LCD_Cursor(9);
+	LCD_WriteData('Y');	
+	
+	LCD_Cursor(11);
+	LCD_WriteData('B');
+	LCD_Cursor(12);
+	LCD_WriteData('U');
+	LCD_Cursor(13);
+	LCD_WriteData('T');
+	LCD_Cursor(14);
+	LCD_WriteData('T');
+	LCD_Cursor(15);
+	LCD_WriteData('O');
+	LCD_Cursor(16);
+	LCD_WriteData('N');
+	
+	LCD_Cursor(17);
+	LCD_WriteData('T');
+	LCD_Cursor(18);
 	LCD_WriteData('O');
 	
-	LCD_Cursor(9);
-	LCD_WriteData(' ');
-	
-	
-	LCD_Cursor(10);
-	LCD_WriteData('P');
-	LCD_Cursor(11);
-	LCD_WriteData('L');
-	LCD_Cursor(12);
-	LCD_WriteData('A');
-	LCD_Cursor(13);
-	LCD_WriteData('Y');
-	
-	//temp fix for refreshing, if I only did writedata for "PRESS TO PLAY", to play gets cut out, I am unsure of fix at the current moment
-	LCD_Cursor(14);
-	LCD_WriteData(' ');
-	LCD_Cursor(15);
-	LCD_WriteData(' ');
-	LCD_Cursor(16);
-	LCD_WriteData(' ');
-	LCD_Cursor(17);
-	LCD_WriteData(' ');
-	LCD_Cursor(18);
-	LCD_WriteData(' ');
-	LCD_Cursor(19);
-	LCD_WriteData(' ');
 	LCD_Cursor(20);
-	LCD_WriteData(' ');
+	LCD_WriteData('P');
 	LCD_Cursor(21);
-	LCD_WriteData(' ');
+	LCD_WriteData('L');
 	LCD_Cursor(22);
-	LCD_WriteData(' ');
+	LCD_WriteData('A');
 	LCD_Cursor(23);
-	LCD_WriteData(' ');
-	LCD_Cursor(24);
-	LCD_WriteData(' ');
-	LCD_Cursor(25);
-	LCD_WriteData(' ');
-	LCD_Cursor(26);
-	LCD_WriteData(' ');
-	LCD_Cursor(27);
-	LCD_WriteData(' ');
-	LCD_Cursor(28);
-	LCD_WriteData(' ');
-	LCD_Cursor(29);
-	LCD_WriteData(' ');
-	LCD_Cursor(30);
-	LCD_WriteData(' ');
-	LCD_Cursor(31);
-	LCD_WriteData(' ');
-	LCD_Cursor(32);
-	LCD_WriteData(' ');
-	
+	LCD_WriteData('Y');
+*/
 }
 
 
