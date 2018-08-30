@@ -15,7 +15,7 @@ CURRENT CODE: TEST.C
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-//#include <util/delay.h>
+#include <avr/eeprom.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "timer.h"
@@ -157,22 +157,10 @@ int startGame()
 
 void updateLCD()
 {
-/*	if (gameOver == 0)
-	{
-		LCD_ClearScreen();
-		LCD_DisplayString(1, combo + \0);
-	}
-	else if (gameOver == 1)
-	{
-		LCD_ClearScreen();
-		LCD_DisplayString(1, "this is gay");
-	}
-	*/
 	unsigned char tmpScore = score;
 	unsigned char tmpCombo = combo;
 	if(gameOver != 1)
 	{
-//		LCD_DisplayString(1, "Player 1");
 		LCD_ClearScreen();
 		LCD_Cursor(1);
 		LCD_WriteData('S');
@@ -194,7 +182,22 @@ void updateLCD()
 		LCD_WriteData(tmpScore / 10 + '0'); //tens place
 		LCD_Cursor(9);
 		LCD_WriteData(tmpScore % 10 + '0'); //ones place*/
-
+		/*
+		LCD_Cursor(10);
+		LCD_WriteData('I');
+		LCD_Cursor(11);
+		LCD_WriteData('C');
+		LCD_Cursor(12);
+		LCD_WriteData('H');
+		LCD_Cursor(13);
+		LCD_WriteData('I');
+		LCD_Cursor(14);
+		LCD_WriteData('B');
+		LCD_Cursor(15);
+		LCD_WriteData('A');
+		LCD_Cursor(16);
+		LCD_WriteData('N');
+		*/
 		//combo
 		LCD_Cursor(17);
 		LCD_WriteData( tmpCombo / 100  + '0'); //hundreds place
@@ -206,12 +209,89 @@ void updateLCD()
 		LCD_Cursor(20);
 		LCD_WriteData('x');
 		}
-		else {
-			LCD_ClearScreen();
-			LCD_DisplayString(1, "press reset to play again");
+		
+		LCD_Cursor(25);
+		LCD_WriteData('B');
+		LCD_Cursor(26);
+		LCD_WriteData('E');
+		LCD_Cursor(27);
+		LCD_WriteData('S');
+		LCD_Cursor(28);
+		LCD_WriteData('T');
+		LCD_Cursor(29);
+		LCD_WriteData(':');
+
+				
+		if (eeprom_read_byte(0x00) == 255)
+		{
+			eeprom_update_byte(0x00, 0x00);
 		}
+		uint8_t tmpHigh = eeprom_read_byte(0x00);
+		if (score > tmpHigh) {
+			eeprom_update_byte(0x00, score);  //replace highscore with score in eeprom
+		}
+		tmpHigh = eeprom_read_byte(0x00);
+		//High Score
+		LCD_Cursor(30);
+		LCD_WriteData( tmpHigh / 100  + '0'); //hundreds place
+		tmpHigh = tmpHigh - (tmpHigh / 100) * 100;
+		LCD_Cursor(31);
+		LCD_WriteData(tmpHigh / 10 + '0'); //tens place
+		LCD_Cursor(32);
+		LCD_WriteData(tmpHigh % 10 + '0'); //ones place*/
+		
 }
 
+void LCD_PlayStart() {
+	score = 0;
+	LCD_ClearScreen();
+	LCD_DisplayString(1, "Press to Play");
+/*	LCD_Cursor(1);
+	LCD_WriteData('P');
+	LCD_Cursor(2);
+	LCD_WriteData('R');
+	LCD_Cursor(3);
+	LCD_WriteData('E');
+	LCD_Cursor(4);
+	LCD_WriteData('S');
+	LCD_Cursor(5);
+	LCD_WriteData('S');
+	
+	LCD_Cursor(7);
+	LCD_WriteData('A');
+	LCD_Cursor(8);
+	LCD_WriteData('N');
+	LCD_Cursor(9);
+	LCD_WriteData('Y');	
+	
+	LCD_Cursor(11);
+	LCD_WriteData('B');
+	LCD_Cursor(12);
+	LCD_WriteData('U');
+	LCD_Cursor(13);
+	LCD_WriteData('T');
+	LCD_Cursor(14);
+	LCD_WriteData('T');
+	LCD_Cursor(15);
+	LCD_WriteData('O');
+	LCD_Cursor(16);
+	LCD_WriteData('N');
+	
+	LCD_Cursor(17);
+	LCD_WriteData('T');
+	LCD_Cursor(18);
+	LCD_WriteData('O');
+	
+	LCD_Cursor(20);
+	LCD_WriteData('P');
+	LCD_Cursor(21);
+	LCD_WriteData('L');
+	LCD_Cursor(22);
+	LCD_WriteData('A');
+	LCD_Cursor(23);
+	LCD_WriteData('Y');
+*/
+}
 
 
 
@@ -393,51 +473,13 @@ int Beats_Tick(int Beats_state)
 }
 
 
-
-//SM2 IS SUPPOSED TO BE TESTED FOR SHIFT REGISTER, LITERALLY DOES NOTHING ATM //BASED OFF OF THE LED_MATRIX_DEMO CODE
-enum SM2_States {sm2_display};
-int SM2_Tick(int state) {
-
-    // === Local Variables ===
-//    static unsigned char y_val = 0b00000001; // sets the pattern displayed on columns
-//    static unsigned char x_val = 0b01111111; // grounds column to display pattern
-      static unsigned char x_player = 0x03;
-	
-	// === Transitions ===
-    switch (state) {
-   	 case sm2_display:    break;
-   	 default:   	        state = sm2_display;
-   			        break;
-    }
-
-
-
-// === Actions === << EDITED >>
-switch (state) {
-	case sm2_display:   // If illuminated LED in bottom right corner	
-	if (x_player == 0x0F) {
-//		x_player = 0x01;
-	}
-	else {
-//		x_player = (x_player << 1) | 0x01;
-	}
-	break;
-	default:   	        break;
-}
-
-//	
-//	transmit_data(x_player);
-    return state;    
-};
-
-
-
 enum Matrix_Output_states {Start_Matrix_Output, Matrix_Output_catcher,  Matrix_Output_beats, End_Game} Matrix_Output_state;
 int Matrix_Output(int Matrix_Output_state)
 {	
 	switch (Matrix_Output_state) //State transitions
 	{
 		case Start_Matrix_Output:
+		LCD_PlayStart();
 		if (startGame() == 1 && gameOver == 0)
 		{
 			Matrix_Output_state = Matrix_Output_catcher;
@@ -484,8 +526,7 @@ int Matrix_Output(int Matrix_Output_state)
 		case Matrix_Output_catcher:
 		PORTA = 0b00000001;
 		PORTB = x_catcher;
-//		transmit_data(something); //idk how to do this yet
-		
+				
 		if(y_val == 0b00000001 && checkCollision() == 1)
 		{
 			beat_catch = 1;
@@ -525,10 +566,6 @@ int Catch_Output(int Catch_state)
 		case Start_Catch:
 		if (beat_catch == 1)
 		{
-			/*beat_catch = 0;
-			combo = combo + 1;
-			score = score + combo;
-			updateLCD();*/
 			Catch_state = Record_Catch;
 		}
 		else {
@@ -545,6 +582,7 @@ int Catch_Output(int Catch_state)
 		}
 		else if (gameOver == 1) {
 			Reset_Catch();
+			updateLCD();
 		}
 		Catch_state = Start_Catch;
 		break;
@@ -574,10 +612,6 @@ int Miss_Output(int Miss_state)
 		case Start_Miss:
 		if (beat_miss == 1)
 		{
-			/*beat_miss = 0;
-			health = health - 1;
-			combo = 0;
-			updateLCD();*/
 			Miss_state = Record_Miss;
 		}
 		else
@@ -595,6 +629,7 @@ int Miss_Output(int Miss_state)
 		}
 		else if (gameOver == 1) {
 			Reset_Miss();
+			updateLCD();
 		}
 		Miss_state = Start_Miss;
 		break;
@@ -631,9 +666,7 @@ int LCD_Display(int LCD_state)
 		break;
 		
 		case display_start:
-		LCD_init();
-		LCD_ClearScreen();
-		LCD_DisplayString(1, "Press any button to start");
+		LCD_PlayStart();
 		if (startGame() == 1 && gameOver == 0)
 		{
 			LCD_state = display_game;
@@ -645,12 +678,8 @@ int LCD_Display(int LCD_state)
 		break;
 		
 		case display_game:
-//		LCD_DisplayString(1, combo + 'x' + "    Score: " + score  );
-		LCD_ClearScreen();
-		LCD_DisplayString(1, "Is this working");
+		updateLCD();
 		if (gameOver == 1) {
-			LCD_ClearScreen();
-			LCD_DisplayString(1, "Final Score: 0");
 			LCD_state = display_end;
 		}
 		else {
@@ -688,6 +717,8 @@ int LCD_Display(int LCD_state)
 	return LCD_state;
 }
 */
+
+
 int main(void)
 {
 	DDRA = 0xFF; PORTA = 0x00; //outputs
@@ -697,18 +728,16 @@ int main(void)
 		
 	// Period for the tasks
 	unsigned long int Beats_calc = 200;
-	unsigned long int SM2_calc = 200;
 	unsigned long int Player_calc = 50;
 	unsigned long int Matrix_calc = 1;
-	unsigned long int Catch_calc = 100;
-	unsigned long int Miss_calc = 100;
-//	unsigned long int LCD_calc = 100;
+	unsigned long int Catch_calc = 200;
+	unsigned long int Miss_calc = 200;
+//	unsigned long int LCD_calc = 200;
 	
 	
 	//Calculating GCD
 	unsigned long tempGCD = 1;
-	tempGCD = findGCD(Beats_calc, SM2_calc);
-	tempGCD = findGCD(tempGCD, Player_calc);
+	tempGCD = findGCD(Beats_calc, Player_calc);
 	tempGCD = findGCD(tempGCD, Matrix_calc);
 	tempGCD = findGCD(tempGCD, Catch_calc);
 	tempGCD = findGCD(tempGCD, Miss_calc);
@@ -719,7 +748,6 @@ int main(void)
 
 	//Recalculate GCD periods for scheduler
 	unsigned long int Beats_period = Beats_calc/GCD;
-	unsigned long int SM2_period = SM2_calc/GCD;
 	unsigned long int Player_period = Player_calc/GCD;
 	unsigned long int Matrix_period = Matrix_calc/GCD;
 	unsigned long int Catch_period = Catch_calc/GCD;
@@ -727,8 +755,8 @@ int main(void)
 //	unsigned long int LCD_period = LCD_calc/GCD;
 	
 	//Declare an beats of tasks
-	static task Beats_Task, SM2_Task, Player_Task, Matrix_Task, Catch_Task, Miss_Task;//, LCD_Task;
-	task *tasks[] = { &Beats_Task, &SM2_Task, &Player_Task, &Matrix_Task, &Catch_Task, &Miss_Task};// &LCD_Task };
+	static task Beats_Task, Player_Task, Matrix_Task, Catch_Task, Miss_Task;//, LCD_Task;
+	task *tasks[] = { &Beats_Task, &Player_Task, &Matrix_Task, &Catch_Task, &Miss_Task};//, &LCD_Task };
 	const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
 	// Task 1
@@ -737,43 +765,38 @@ int main(void)
 	Beats_Task.elapsedTime = Beats_period;//Task current elapsed time.
 	Beats_Task.TickFct = &Beats_Tick;//Function pointer for the tick.
 
-	// Task 2
-	SM2_Task.state = sm2_display;//Task initial state.
-	SM2_Task.period = SM2_period;//Task Period.
-	SM2_Task.elapsedTime = SM2_period;//Task current elapsed time.
-	SM2_Task.TickFct = &SM2_Tick;//Function pointer for the tick.
-
-	// Task 3 //Player control
+	// Task 2 //Player control
 	Player_Task.state = Player_start;//Task initial state.
 	Player_Task.period = Player_period;//Task Period.
 	Player_Task.elapsedTime = Player_period;//Task current elapsed time.
 	Player_Task.TickFct = &Player_Tick;//Function pointer for the tick.
 
-	// Task 4 //matrix display
+	// Task 3 //matrix display
 	Matrix_Task.state = Start_Matrix_Output;//Task initial state.
 	Matrix_Task.period = Matrix_period;//Task Period.
 	Matrix_Task.elapsedTime = Matrix_period;//Task current elapsed time.
 	Matrix_Task.TickFct = &Matrix_Output;//Function pointer for the tick.
 
-	// Task 5 //Catch states
+	// Task 4 //Catch states
 	Catch_Task.state = Start_Catch;//Task initial state.
 	Catch_Task.period = Catch_period;//Task Period.
 	Catch_Task.elapsedTime = Catch_period;//Task current elapsed time.
 	Catch_Task.TickFct = &Catch_Output;//Function pointer for the tick.
 
-	// Task 6 //Miss states
+	// Task 5 //Miss states
 	Miss_Task.state = Start_Miss;//Task initial state.
 	Miss_Task.period = Miss_period;//Task Period.
 	Miss_Task.elapsedTime = Miss_period;//Task current elapsed time.
 	Miss_Task.TickFct = &Miss_Output;//Function pointer for the tick.
 
 /*
-	// Task 7 //LCD states
+	// Task 6 //LCD states
 	LCD_Task.state = display_init;//Task initial state.
 	LCD_Task.period = LCD_period;//Task Period.
 	LCD_Task.elapsedTime = LCD_period;//Task current elapsed time.
 	LCD_Task.TickFct = &LCD_Display;//Function pointer for the tick.
 */
+
 	// Set the timer and turn it on
 
 //	LCD_init();
@@ -786,7 +809,7 @@ int main(void)
 
 	LCD_init();
 	LCD_ClearScreen();
-	LCD_DisplayString(1, "Press any button to start");
+//	LCD_DisplayString(1, "Press any button to start");
 	
 	TimerSet(GCD);
 	TimerOn();
