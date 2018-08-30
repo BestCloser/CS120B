@@ -8,9 +8,11 @@ int main(void)
 	
 	// Initializes the LCD display
 	LCD_init();
-	
+	LCD_ClearScreen();
+//	LCD_Cursor(1);
+//	LCD_WriteData(9 + '0'); 
 	// Starting at position 1 on the LCD screen, writes Hello World
-	LCD_DisplayString(1, "Hello World");
+	LCD_DisplayString(1, "WTF");
 	
 	while(1) {continue;}
 }
