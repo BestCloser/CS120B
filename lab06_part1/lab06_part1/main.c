@@ -7,8 +7,9 @@
 
 
 #include <avr/io.h>
+#include "io.h"
 #include "io.c"
-#include "timer.c"
+#include "timer.h"
 
 void Tick(unsigned char *prev);
 

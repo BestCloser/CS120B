@@ -11,11 +11,11 @@ IDK HOW TO USE MULTIPLE C FILES, SO GOING TO JUST COPY-PASTE OVER INTO THIS FILE
 CURRENT CODE: TEST.C
 */
 
-#define F_CPU 1000000UL
+//#define F_CPU 1000000UL
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <util/delay.h>
+//#include <util/delay.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "timer.h"
@@ -552,8 +552,8 @@ int main(void)
 	DDRA = 0xFF; PORTA = 0x00; //outputs
 	DDRB = 0xFF; PORTB = 0x00;
 	DDRC = 0xFF; PORTC = 0x00;
-	DDRD = 0x00; PORTD = 0xFF; //inputs
-	
+//	DDRD = 0xC0; PORTD = 0x3F; //inputs
+	DDRD = 0xFF; PORTD = 0xFF;
 		
 	// Period for the tasks
 	unsigned long int Beats_calc = 200;
@@ -561,7 +561,7 @@ int main(void)
 	unsigned long int Player_calc = 50;
 	unsigned long int Matrix_calc = 1;
 	unsigned long int Catch_calc = 100;
-	unsigned long int Miss_calc = 100;
+	unsigned long int Miss_calc = 200;
 	
 	
 	//Calculating GCD
@@ -625,12 +625,14 @@ int main(void)
 		Miss_Task.TickFct = &Miss_Output;//Function pointer for the tick.
 
 	// Set the timer and turn it on
-/*
+
 	LCD_init();
 	LCD_ClearScreen();
 	LCD_Cursor(1);
-	LCD_WriteData(0 + '0');
-*/
+//	LCD_WriteData(0 + '0');
+	LCD_DisplayString(1, "Hello World");
+
+	
 	TimerSet(GCD);
 	TimerOn();
 
