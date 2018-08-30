@@ -49,7 +49,6 @@ unsigned char bounds = 0;
 unsigned char gameOver = 0;
 unsigned char beat_catch = 0;
 unsigned char beat_miss = 0;
-unsigned char miss_checker = 0;
 unsigned char health = 4;
 unsigned char combo = 0;
 unsigned char score = 0;
@@ -677,7 +676,6 @@ int Miss_Output(int Miss_state)
 		break;
 		
 		case Record_Miss:
-		miss_checker++;
 		break;
 		
 		default:
