@@ -184,7 +184,7 @@ void updateLCD()
 		LCD_Cursor(8);
 		LCD_WriteData(tmpScore / 10 + '0'); //tens place
 		LCD_Cursor(9);
-		LCD_WriteData(tmpScore % 10 + '0'); //ones place*/
+		LCD_WriteData(tmpScore % 10 + '0'); //ones place
 		/*
 		LCD_Cursor(10);
 		LCD_WriteData('I');
@@ -208,7 +208,7 @@ void updateLCD()
 		LCD_Cursor(18);
 		LCD_WriteData(tmpCombo / 10 + '0'); //tens place
 		LCD_Cursor(19);
-		LCD_WriteData(tmpCombo % 10 + '0'); //ones place*/
+		LCD_WriteData(tmpCombo % 10 + '0'); //ones place
 		LCD_Cursor(20);
 		LCD_WriteData('x');
 		}
@@ -241,7 +241,7 @@ void updateLCD()
 		LCD_Cursor(31);
 		LCD_WriteData(tmpHigh / 10 + '0'); //tens place
 		LCD_Cursor(32);
-		LCD_WriteData(tmpHigh % 10 + '0'); //ones place*/
+		LCD_WriteData(tmpHigh % 10 + '0'); //ones place
 		
 }
 
