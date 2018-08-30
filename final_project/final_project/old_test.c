@@ -1,3 +1,5 @@
+//PLACE HOLDER FILE
+
 /*
  * final_project.c
  *
@@ -8,14 +10,14 @@
 /*
 WILL EDIT THIS FILE WHENEVER I NEED TO TEST SOMETHING ON BREADBOARD BECAUSE
 IDK HOW TO USE MULTIPLE C FILES, SO GOING TO JUST COPY-PASTE OVER INTO THIS FILE
+
+
 CURRENT CODE: TEST.C
 */
 
-#define F_CPU 1000000UL
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <util/delay.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "timer.h"
@@ -35,8 +37,8 @@ unsigned short x_beats[8] = {0b01111111, 0b10111111, 0b11011111, 0b11101111, 0b1
 //unsigned short y_beats[8] = {0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00100000, 0b01000000, 0b10000000};
 unsigned short y_beats[8] = {0b10000000, 0b01000000, 0b00100000, 0b00010000, 0b00001000, 0b00000100, 0b00000010, 0b00000001};
 
-unsigned char i = 1;
-unsigned char j = 1;
+unsigned char i = 0;
+unsigned char j = 0;
 unsigned char x_val = ~0x00;
 unsigned char y_val = 0x00;
 unsigned char x_catcher = ~0x00;
@@ -45,8 +47,7 @@ unsigned char bounds = 0;
 unsigned char gameOver = 0;
 unsigned char beat_catch = 0;
 unsigned char beat_miss = 0;
-unsigned char miss_checker = 0;
-unsigned char health = 4;
+unsigned char health = 0x03;
 unsigned char combo = 0;
 unsigned char score = 0;
 
@@ -73,77 +74,36 @@ void transmit_data(unsigned char data) {
 
 void check_health()
 {
-	if (health == 0)
+	if (health <= 0)
 	{
 		gameOver = 1;
 	}
 }
 
-int checkCollision()
-{
-	if ((x_catcher & ~0x01) == (x_val & ~0x01) ||
-	(x_catcher & ~0x02) == (x_val & ~0x02) ||
-	(x_catcher & ~0x04) == (x_val & ~0x04) ||
-	(x_catcher & ~0x08) == (x_val & ~0x08) ||
-	(x_catcher & ~0x10) == (x_val & ~0x10) ||
-	(x_catcher & ~0x20) == (x_val & ~0x20) ||
-	(x_catcher & ~0x40) == (x_val & ~0x40) ||
-	(x_catcher & ~0x80) == (x_val & ~0x80) )
-	{
-		return 1;
-	}
-	else {
-		return 0;
-	}
-}
-
-void CLEAR_PLAYER()
-{
-	x_catcher = ~0x00;
-	bounds = 0;
-//	x_catcher = ~(0b00011000);
-//	bounds = 0x04;
-}
-
-void CLEAR_BEATS()
-{
-	i = 0;
-	j = 0;
-	x_val = ~0x00;
-	y_val = 0x00;
-}
-
-void Reset_Catch()
-{
-	beat_catch = 0;
-	combo = 0;
-	score = 0;
-}
-
-void Reset_Miss()
-{
-	beat_miss = 0;
-}
-
-void CLEAR_MATRIX()
+void CLEAR_ALL()
 {
 	PORTA =   0b00000000; //y
 	PORTB = ~(0b00000000); //x
-	PORTD = 0xFF;	
+//	gameOver = 0;
+	//tossing everything in here
+	 i = 0;
+	 j = 0;
+	 x_val = 0x00;
+	 y_val = 0x00;
+	 x_catcher = ~(0b00011000);
+	 bounds = 0x04;
+//   startGame = 0
+	 gameOver = 0;
+	 beat_catch = 0;
+	 beat_miss = 0;
+	 health = 0x03;
+	 combo = 0;
+	 score = 0;
 }
-
-void Reset_gameOver()
-{
-	unsigned char D3 = ~PIND & 0x04;
-	if (D3 == 0x04){
-		health = 4;
-		gameOver = 0;
-	}
-}
-
 
 int startGame()
 {
+
 	unsigned char tmp = PIND;
 	tmp = tmp & 0x03;
 	if (tmp == 0x02 || tmp == 0x01)
@@ -153,6 +113,24 @@ int startGame()
 	else {
 		return 0;
 	}
+}
+
+int checkCollision()
+{
+	if ((x_catcher & ~0x01) == (x_val & ~0x01) ||
+		(x_catcher & ~0x02) == (x_val & ~0x02) ||
+		(x_catcher & ~0x04) == (x_val & ~0x04) ||
+		(x_catcher & ~0x08) == (x_val & ~0x08) ||
+		(x_catcher & ~0x10) == (x_val & ~0x10) ||
+		(x_catcher & ~0x20) == (x_val & ~0x20) ||
+		(x_catcher & ~0x40) == (x_val & ~0x40) ||
+		(x_catcher & ~0x80) == (x_val & ~0x80) )
+		{
+			return 1;
+		}
+		else {
+			return 0;
+		}
 }
 
 
@@ -187,16 +165,25 @@ int Player_Tick(int Player_state)
 		break;
 		
 		case main_state:
-		if (gameOver == 1) {
-			CLEAR_PLAYER();
-			Player_state = Player_init;
-		}
-		
-		else if (left_press == 0x02)
+		if (left_press == 0x02)
 		{
 			Player_state = left;
 		}
 		else if(right_press == 0x01)
+		{
+			Player_state = right;
+		}	
+		else {
+			Player_state = main_state;
+		}
+		break;
+		
+		case Release:
+		if(left_press == 0x02 && right_press == 0x00)
+		{
+			Player_state = left;
+		}
+		else if(right_press == 0x01 && left_press == 0x00)
 		{
 			Player_state = right;
 		}
@@ -205,33 +192,31 @@ int Player_Tick(int Player_state)
 		}
 		break;
 		
-		case Release:
-		if(right_press == 0x01 && left_press == 0x00)
-		{
-			Player_state = right;
-		}
-		else if(left_press == 0x02 && right_press == 0x00)
-		{
-			Player_state = left;
-		}
-		break;
-		
 		case left:
+		if (gameOver == 1) {
+			CLEAR_ALL();
+			Player_state = Player_init;
+		}
 		Player_state = Release;
 		break;
 		
 		case right:
+		if (gameOver == 1) {
+			CLEAR_ALL();
+			Player_state = Player_init;
+		}
 		Player_state = Release;
 		break;
 		
 		default:
-		Player_state = Player_start;
+		Player_state = Player_init;
 		break;
 	}
 
 	switch (Player_state) //State actions
 	{
 		case Player_start:
+		x_catcher = ~(0b00011000);
 		break;
 		
 		case initialization:
@@ -268,12 +253,16 @@ int Player_Tick(int Player_state)
 
 
 
-enum Beats_states {Beats_start, Beats_initialization, Beats_drop} Beats_state;
+enum Beats_states {Beats_init, Beats_start, Beats_initialization, Beats_drop} Beats_state;
 int Beats_Tick(int Beats_state)
 {
 	
 	switch (Beats_state) //State transitions
 	{
+		case Beats_init:
+		Beats_state = Beats_start;
+		break;
+		
 		case Beats_start:
 		if(startGame() == 1 && gameOver == 0)
 		{
@@ -286,8 +275,8 @@ int Beats_Tick(int Beats_state)
 		break;
 		
 		case Beats_initialization:
-		i = 0;
-		j = rand() % 8;
+//		i = 0;
+//		j = rand() % 8;
 		Beats_state = Beats_drop;
 		break;
 		
@@ -308,8 +297,8 @@ int Beats_Tick(int Beats_state)
 		}
 		else if(gameOver == 1)
 		{
-			CLEAR_BEATS();
-			Beats_state = Beats_start;
+			CLEAR_ALL();
+			Beats_state = Beats_init;
 		}
 		break;
 		
@@ -334,8 +323,6 @@ int Beats_Tick(int Beats_state)
 	}
 	return Beats_state;
 }
-
-
 
 //SM2 IS SUPPOSED TO BE TESTED FOR SHIFT REGISTER, LITERALLY DOES NOTHING ATM //BASED OFF OF THE LED_MATRIX_DEMO CODE
 enum SM2_States {sm2_display};
@@ -375,11 +362,15 @@ switch (state) {
 
 
 
-enum Matrix_Output_states {Start_Matrix_Output, Matrix_Output_catcher,  Matrix_Output_beats, End_Game} Matrix_Output_state;
+enum Matrix_Output_states { Matrix_init, Start_Matrix_Output, Matrix_Output_catcher,  Matrix_Output_beats} Matrix_Output_state;
 int Matrix_Output(int Matrix_Output_state)
-{	
+{
 	switch (Matrix_Output_state) //State transitions
 	{
+		case Matrix_init:
+		Matrix_Output_state = Start_Matrix_Output;
+		break;
+		
 		case Start_Matrix_Output:
 		if (startGame() == 1 && gameOver == 0)
 		{
@@ -393,27 +384,24 @@ int Matrix_Output(int Matrix_Output_state)
 		
 		
 		case Matrix_Output_catcher:
-		Matrix_Output_state = Matrix_Output_beats;
 		if(gameOver == 1)
 		{
-			CLEAR_MATRIX();
-			Matrix_Output_state = End_Game;
+			CLEAR_ALL();
+			Matrix_Output_state = Matrix_init;
+		}
+		else {
+			Matrix_Output_state = Matrix_Output_beats;
 		}
 		break;
 		
 		case Matrix_Output_beats:
-		Matrix_Output_state = Matrix_Output_catcher;
-		break;
-		
-		case End_Game:
-		if (gameOver == 1) {
-			while (gameOver == 1) {
-				Reset_gameOver();
-			}
-			Matrix_Output_state = End_Game;
+		if(gameOver == 1)
+		{
+			CLEAR_ALL();
+			Matrix_Output_state = Matrix_init;
 		}
 		else {
-			Matrix_Output_state = Start_Matrix_Output;
+			Matrix_Output_state = Matrix_Output_catcher;
 		}
 		break;
 		
@@ -428,22 +416,21 @@ int Matrix_Output(int Matrix_Output_state)
 		PORTA = 0b00000001;
 		PORTB = x_catcher;
 //		transmit_data(something); //idk how to do this yet
-		
-		if(y_val == 0b00000001 && checkCollision() == 1)
+	
+		if(y_val == 0b00000001 && checkCollision())
 		{
 			beat_catch = 1;
-			
-			
-		}
-		else if (y_val == 0b00000001 && checkCollision() == 0)
-		{
-			
-			check_health();
-			
-			beat_miss = 1;
-			
+	
+//THIS WORKS /no it doesnt	/WAIT IT WORKS NOW WHAT		
 			PORTA = 0xFF;
 			PORTB = 0x00;
+		}
+		else if (y_val == 0b00000001 && !checkCollision())
+		{
+			beat_miss = 1;
+//THIS DID NOT WORK	/wtf it works now		
+//			PORTA = 0xFF;
+//			PORTB = 0x00;
 		}	
 		break;
 		
@@ -460,26 +447,27 @@ int Matrix_Output(int Matrix_Output_state)
 }
 
 
-enum Catch_states {Start_Catch, Record_Catch} Catch_state;
+enum Catch_states { Catch_init, Start_Catch} Catch_state;
 int Catch_Output(int Catch_state)
 {
 	switch (Catch_state) //State transitions
 	{
+		case Catch_init:
+		Catch_state = Start_Catch;
+		break;
+		
 		case Start_Catch:
 		if (beat_catch == 1)
 		{
-			beat_catch = 0;
-			combo = combo + 1;
+			combo = combo + 0x01;
 			score = score + combo;
+			beat_catch = 0;
 		}
-		else {
-			Catch_state = Record_Catch;
-		}
-		break;
-		
-		case Record_Catch:
-		if (gameOver == 1) {
-			Reset_Catch();
+		else if (beat_miss == 1) {
+			health = health - 0x01;
+			combo = 0;
+			beat_miss = 0;
+			check_health();
 		}
 		Catch_state = Start_Catch;
 		break;
@@ -501,51 +489,6 @@ int Catch_Output(int Catch_state)
 }
 
 
-enum Miss_states {Start_Miss, Record_Miss} Miss_state;
-int Miss_Output(int Miss_state)
-{
-	switch (Miss_state) //State transitions
-	{
-		case Start_Miss:
-		if (beat_miss == 1)
-		{
-			beat_miss = 0;
-			health = health - 1;
-			Miss_state = Record_Miss;
-		}
-		else
-		{
-			Miss_state = Start_Miss;
-		}
-		break;
-		
-		case Record_Miss:
-		if (gameOver == 1) {
-			Reset_Miss();
-		}
-		Miss_state = Start_Miss;
-		break;
-		
-		default:
-		Miss_state = Start_Miss;
-		break;
-	}
-
-	switch (Miss_state) //State actions
-	{
-		case Start_Miss:
-		break;
-		
-		case Record_Miss:
-		miss_checker++;
-		break;
-		
-		default:
-		break;
-	}
-	return Miss_state;
-}
-
 
 int main(void)
 {
@@ -560,8 +503,7 @@ int main(void)
 	unsigned long int SM2_calc = 200;
 	unsigned long int Player_calc = 50;
 	unsigned long int Matrix_calc = 1;
-	unsigned long int Catch_calc = 100;
-	unsigned long int Miss_calc = 100;
+	unsigned long int Catch_calc = 1;
 	
 	
 	//Calculating GCD
@@ -570,7 +512,6 @@ int main(void)
 	tempGCD = findGCD(tempGCD, Player_calc);
 	tempGCD = findGCD(tempGCD, Matrix_calc);
 	tempGCD = findGCD(tempGCD, Catch_calc);
-	tempGCD = findGCD(tempGCD, Miss_calc);
 	
 	//Greatest common divisor for all tasks or smallest time unit for tasks.
 	unsigned long int GCD = tempGCD;
@@ -581,15 +522,14 @@ int main(void)
 	unsigned long int Player_period = Player_calc/GCD;
 	unsigned long int Matrix_period = Matrix_calc/GCD;
 	unsigned long int Catch_period = Catch_calc/GCD;
-	unsigned long int Miss_period = Miss_calc/GCD;
 	
 	//Declare an beats of tasks
-	static task Beats_Task, SM2_Task, Player_Task, Matrix_Task, Catch_Task, Miss_Task;
-	task *tasks[] = { &Beats_Task, &SM2_Task, &Player_Task, &Matrix_Task, &Catch_Task, &Miss_Task };
+	static task Beats_Task, SM2_Task, Player_Task, Matrix_Task, Catch_Task;
+	task *tasks[] = { &Beats_Task, &SM2_Task, &Player_Task, &Matrix_Task, &Catch_Task };
 	const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
 	// Task 1
-	Beats_Task.state = Beats_start;//Task initial state.
+	Beats_Task.state = Beats_init;//Task initial state.
 	Beats_Task.period = Beats_period;//Task Period.
 	Beats_Task.elapsedTime = Beats_period;//Task current elapsed time.
 	Beats_Task.TickFct = &Beats_Tick;//Function pointer for the tick.
@@ -601,28 +541,24 @@ int main(void)
 	SM2_Task.TickFct = &SM2_Tick;//Function pointer for the tick.
 
 	// Task 3 //Player control
-	Player_Task.state = Player_start;//Task initial state.
+	Player_Task.state = Player_init;//Task initial state.
 	Player_Task.period = Player_period;//Task Period.
 	Player_Task.elapsedTime = Player_period;//Task current elapsed time.
 	Player_Task.TickFct = &Player_Tick;//Function pointer for the tick.
 
 	// Task 4 //matrix display
-	Matrix_Task.state = Start_Matrix_Output;//Task initial state.
+	Matrix_Task.state = Matrix_init;//Task initial state.
 	Matrix_Task.period = Matrix_period;//Task Period.
 	Matrix_Task.elapsedTime = Matrix_period;//Task current elapsed time.
 	Matrix_Task.TickFct = &Matrix_Output;//Function pointer for the tick.
 
 	// Task 5 //Catch states
-	Catch_Task.state = Start_Catch;//Task initial state.
+	Catch_Task.state = Catch_init;//Task initial state.
 	Catch_Task.period = Catch_period;//Task Period.
 	Catch_Task.elapsedTime = Catch_period;//Task current elapsed time.
 	Catch_Task.TickFct = &Catch_Output;//Function pointer for the tick.
 
-	// Task 6 //Miss states
-		Miss_Task.state = Start_Miss;//Task initial state.
-		Miss_Task.period = Miss_period;//Task Period.
-		Miss_Task.elapsedTime = Miss_period;//Task current elapsed time.
-		Miss_Task.TickFct = &Miss_Output;//Function pointer for the tick.
+
 
 	// Set the timer and turn it on
 /*
@@ -654,3 +590,4 @@ int main(void)
 	// Error: Program should not exit!
 	return 0;
 }
+
