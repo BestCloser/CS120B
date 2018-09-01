@@ -9,11 +9,6 @@
 // Catch Game v1.3 
 //=======================================
 
-/*
-WILL EDIT THIS FILE WHENEVER I NEED TO TEST SOMETHING ON BREADBOARD BECAUSE
-IDK HOW TO USE MULTIPLE C FILES, SO GOING TO JUST COPY-PASTE OVER INTO THIS FILE
-CURRENT CODE: TEST.C
-*/
 
 #define F_CPU 8000000UL
 
@@ -105,8 +100,6 @@ void CLEAR_PLAYER()
 {
 	x_catcher = ~0x00;
 	bounds = 0;
-//	x_catcher = ~(0b00011000);
-//	bounds = 0x04;
 }
 
 void CLEAR_BEATS()
@@ -186,22 +179,7 @@ void updateLCD()
 		LCD_WriteData(tmpScore / 10 + '0'); //tens place
 		LCD_Cursor(9);
 		LCD_WriteData(tmpScore % 10 + '0'); //ones place
-		/*
-		LCD_Cursor(10);
-		LCD_WriteData('I');
-		LCD_Cursor(11);
-		LCD_WriteData('C');
-		LCD_Cursor(12);
-		LCD_WriteData('H');
-		LCD_Cursor(13);
-		LCD_WriteData('I');
-		LCD_Cursor(14);
-		LCD_WriteData('B');
-		LCD_Cursor(15);
-		LCD_WriteData('A');
-		LCD_Cursor(16);
-		LCD_WriteData('N');
-		*/
+	
 		//combo
 		LCD_Cursor(17);
 		LCD_WriteData( tmpCombo / 100  + '0'); //hundreds place
@@ -283,36 +261,15 @@ void LCD_PlayStart() {
 	LCD_Cursor(13);
 	LCD_WriteData('Y');
 	
-	//temp fix for refreshing, if I only did writedata for "PRESS TO PLAY", to play gets cut out, I am unsure of fix at the current moment
-/*	LCD_Cursor(14);
-	LCD_WriteData(' ');
-	LCD_Cursor(15);
-	LCD_WriteData(' ');
-	LCD_Cursor(16);
-	LCD_WriteData(' ');
-	LCD_Cursor(17);
-	LCD_WriteData(' ');
-	LCD_Cursor(18);
-	LCD_WriteData(' ');
-	LCD_Cursor(19);
-	LCD_WriteData(' ');
-	LCD_Cursor(20);
-	LCD_WriteData(' ');
-	LCD_Cursor(21);
-	LCD_WriteData(' ');
-	LCD_Cursor(22);
-	LCD_WriteData(' ');
-	LCD_Cursor(23);
-	LCD_WriteData(' ');
-	LCD_Cursor(24);
-	LCD_WriteData(' ');
-*/
+	
+	
 	unsigned char Character[8] = { 0x01, 0x03, 0x07, 0x1F, 0x1F, 0x07, 0x03, 0x01 };
 
 	LCD_Custom_Char(0, Character);
 	LCD_Cursor(15);
 	LCD_WriteData(0);
 
+	//temp fix for refreshing, if I only did writedata for "PRESS TO PLAY", to play gets cut out, I am unsure of fix at the current moment
 
 	LCD_Cursor(25);
 	LCD_WriteData(' ');
@@ -339,7 +296,7 @@ void LCD_PlayStart() {
 enum Player_states { Player_init, Player_start, initialization, main_state , right, left, Release } Player_state;
 int Player_Tick(int Player_state)
 {
-	unsigned char left_press = PIND & 0x02;
+	unsigned char left_press = PIND & 0x02;	
 	unsigned char right_press = PIND & 0x01;
 	
 	switch (Player_state) //State transitions
@@ -348,7 +305,7 @@ int Player_Tick(int Player_state)
 		Player_state = Player_start;
 		break;
 		
-		case Player_start:
+		case Player_start:	
 		if(startGame() == 1 && gameOver == 0)
 		{
 			Player_state = initialization;
@@ -515,7 +472,7 @@ int Beats_Tick(int Beats_state)
 
 enum Matrix_Output_states {Start_Matrix_Output, Matrix_Output_catcher,  Matrix_Output_beats, End_Game} Matrix_Output_state;
 int Matrix_Output(int Matrix_Output_state)
-{	
+{
 	switch (Matrix_Output_state) //State transitions
 	{
 		case Start_Matrix_Output:
@@ -694,69 +651,6 @@ int Miss_Output(int Miss_state)
 }
 
 
-/*
-enum LCD_states {display_init, display_start, display_game, display_end } LCD_state;
-int LCD_Display(int LCD_state)
-{
-	switch(LCD_state)
-	{
-		case display_init:
-		LCD_state = display_start;
-		break;
-		
-		case display_start:
-		LCD_PlayStart();
-		if (startGame() == 1 && gameOver == 0)
-		{
-			LCD_state = display_game;
-		}
-		else
-		{
-				LCD_state = display_start;
-		}
-		break;
-		
-		case display_game:
-		updateLCD();
-		if (gameOver == 1) {
-			LCD_state = display_end;
-		}
-		else {
-			LCD_state = display_game;
-		}
-		break;
-		
-		case display_end:
-		if (gameOver == 0)
-		{
-			LCD_state = display_start;
-		}
-		else {
-			LCD_state = display_end;
-		}
-		break;
-	}
-	
-	switch(LCD_state)
-	{
-		case display_init:
-		break;
-		
-		case display_start:
-		break;
-		
-		case display_game:
-		break;
-		
-		case display_end:
-		break;
-		
-	}
-	
-	return LCD_state;
-}
-*/
-
 
 int main(void)
 {
@@ -771,7 +665,6 @@ int main(void)
 	unsigned long int Matrix_calc = 1;				//LOWER TO FASTER, HIGHER THE SLOWER
 	unsigned long int Catch_calc = 150;
 	unsigned long int Miss_calc = 150;
-//	unsigned long int LCD_calc = 200;
 	
 	
 	//Calculating GCD
@@ -780,7 +673,6 @@ int main(void)
 	tempGCD = findGCD(tempGCD, Matrix_calc);
 	tempGCD = findGCD(tempGCD, Catch_calc);
 	tempGCD = findGCD(tempGCD, Miss_calc);
-//	tempGCD = findGCD(tempGCD, LCD_calc);
 	
 	//Greatest common divisor for all tasks or smallest time unit for tasks.
 	unsigned long int GCD = tempGCD;
@@ -791,7 +683,6 @@ int main(void)
 	unsigned long int Matrix_period = Matrix_calc/GCD;
 	unsigned long int Catch_period = Catch_calc/GCD;
 	unsigned long int Miss_period = Miss_calc/GCD;
-//	unsigned long int LCD_period = LCD_calc/GCD;
 	
 	//Declare an beats of tasks
 	static task Beats_Task, Player_Task, Matrix_Task, Catch_Task, Miss_Task;//, LCD_Task;
@@ -828,13 +719,6 @@ int main(void)
 	Miss_Task.elapsedTime = Miss_period;//Task current elapsed time.
 	Miss_Task.TickFct = &Miss_Output;//Function pointer for the tick.
 
-/*
-	// Task 6 //LCD states
-	LCD_Task.state = display_init;//Task initial state.
-	LCD_Task.period = LCD_period;//Task Period.
-	LCD_Task.elapsedTime = LCD_period;//Task current elapsed time.
-	LCD_Task.TickFct = &LCD_Display;//Function pointer for the tick.
-*/
 
 	// Set the timer and turn it on
 
@@ -842,10 +726,6 @@ int main(void)
 	LCD_init();
 	LCD_ClearScreen();
 
-//	LCD_Command(0xC0);
-//	LCD_WriteData(0);
-
-//	LCD_Custom_Char(0, Character);
 
 	TimerSet(GCD);
 	TimerOn();
